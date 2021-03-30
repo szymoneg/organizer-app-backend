@@ -10,4 +10,5 @@ public interface IUserService {
     User addUser(UserDto user);
     User findByUsername(UserDto user);
     UserDetails loadUserByUsername(String username);
+    User findByIdUser(long idUser);
 }

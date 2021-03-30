@@ -54,4 +54,9 @@ public class UserService implements IUserService, UserDetailsService{
     public User findByUsername(UserDto user) {
         return userRepository.findByUsername(user.getUsername());
     }
+
+    @Override
+    public User findByIdUser(long idUser) {
+        return userRepository.findByIdUser(idUser);
+    }
 }

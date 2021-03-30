@@ -57,6 +57,12 @@ public class UserRestController {
             return new ResponseEntity<>("username: " + user.getUsername() + "is already taken", HttpStatus.BAD_REQUEST);
     }
 
+
+    @GetMapping("/showUserData/{idUser}")
+    public ResponseEntity<?> showUser(@PathVariable(name = "idUser") long idUser){
+        return new ResponseEntity<>(userService.findByIdUser(idUser), HttpStatus.OK);
+    }
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

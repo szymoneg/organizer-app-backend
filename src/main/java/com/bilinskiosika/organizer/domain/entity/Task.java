@@ -1,11 +1,17 @@
 package com.bilinskiosika.organizer.domain.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Timestamp;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -15,8 +21,8 @@ public class Task {
     @Column(name = "id_task")
     private long idTask;
 
-    @ManyToOne
-    @JoinColumn(name = "id_user")
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @Column(name = "title_task")
@@ -25,13 +31,17 @@ public class Task {
     @Column(name = "description_task")
     private String descriptionTask;
 
-    private String duration;
+    @Column(name = "start_task")
+    private Timestamp startTask;
+
+    @Column(name = "end_task")
+    private Timestamp endTask;
 
     private String tags;
 
     private String color;
 
     @Column(name = "notification_task")
-    private Date notificationTask;
+    private Timestamp notificationTask;
 
 }
