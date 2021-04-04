@@ -26,4 +26,9 @@ public class TaskRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
+
+    @GetMapping("/getTasks/{username}")
+    public ResponseEntity<?> getAllTasks(@PathVariable(name = "username") String username){
+        return new ResponseEntity<>(taskService.getAllTasks(username), HttpStatus.OK);
+    }
 }

@@ -1,7 +1,7 @@
 package com.bilinskiosika.organizer.domain.dto;
 
-import lombok.*;
 
+import lombok.*;
 
 @Getter
 @Setter
@@ -9,8 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class TaskDto {
-    private long idUser;
+public class TaskEditDto {
+    private long idTask;
     private String titleTask;
     private String descriptionTask;
     private String startTask;
