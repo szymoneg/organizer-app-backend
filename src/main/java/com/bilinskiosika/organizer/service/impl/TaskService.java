@@ -1,5 +1,6 @@
 package com.bilinskiosika.organizer.service.impl;
 
+import com.bilinskiosika.organizer.domain.dto.TaskDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
 import com.bilinskiosika.organizer.domain.dto.TaskEditDto;
 import com.bilinskiosika.organizer.domain.entity.Task;
@@ -11,7 +12,9 @@ import com.bilinskiosika.organizer.utilities.mappers.TaskMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService implements ITaskService {
@@ -49,12 +52,39 @@ public class TaskService implements ITaskService {
 
     @Override
     public List<TaskDto> getAllTasks(String username) {
-        User user = userRepository.findByUsername(username);
-        return taskMapper.taskToDtoMapper(taskRepository.findTaskByUser(user));
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            System.out.println("Username doesn't exist!");
+            return Collections.emptyList();
+        }else {
+            return taskMapper.taskToDtoMapper(taskRepository.findTaskByUser(user.get()));
+        }
     }
 
     @Override
     public TaskEditDto editTask(TaskEditDto taskEditDto, long idUser) {
+        return null;
+    }
+
+    @Override
+    public TaskDetailsDto getTaskById(long idTask) {
+        TaskDetailsDto taskDetailsDto = taskMapper.taskToDetailsDto(taskRepository.findTaskByIdTask(idTask));
+        return taskDetailsDto;
+    }
+
+    @Override
+    public boolean deleteTask(long idTask) {
+        Optional<Task> removedTask = taskRepository.findTaskByIdTask(idTask);
+        if(removedTask.isEmpty()){
+            System.out.println("Task doesn't exist");
+            return false;
+        }
+        taskRepository.delete(removedTask.get());
+        return true;
+    }
+
+    @Override
+    public List<TaskDetailsDto> getTasksBetweenDate(String firstDate, String secondDate) {
         return null;
     }
 }

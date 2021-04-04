@@ -1,11 +1,13 @@
 package com.bilinskiosika.organizer.utilities.mappers;
 
+import com.bilinskiosika.organizer.domain.dto.TaskDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
 import com.bilinskiosika.organizer.domain.entity.Task;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskMapper {
@@ -29,6 +31,24 @@ public class TaskMapper {
         }
 
         return listTask;
+    }
+
+    public TaskDetailsDto taskToDetailsDto(Optional<Task> task){
+        try {
+            return TaskDetailsDto.builder()
+                    .idTask(task.get().getIdTask())
+                    .titleTask(task.get().getTitleTask())
+                    .descriptionTask(task.get().getDescriptionTask())
+                    .startTask(task.get().getStartTask().toString())
+                    .endTask(task.get().getEndTask().toString())
+                    .color(task.get().getColor())
+                    .tags(task.get().getTags())
+                    .notificationTask(task.get().getNotificationTask().toString())
+                    .build();
+        }catch (Exception e){
+            e.printStackTrace();
+            return new TaskDetailsDto();
+        }
     }
 
 }

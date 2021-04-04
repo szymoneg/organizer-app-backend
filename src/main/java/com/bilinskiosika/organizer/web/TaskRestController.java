@@ -3,6 +3,7 @@ package com.bilinskiosika.organizer.web;
 
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
 import com.bilinskiosika.organizer.service.ITaskService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +20,30 @@ public class TaskRestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewTask(@RequestBody TaskDto taskDto){
-        if (!taskService.addTask(taskDto)){
+    public ResponseEntity<?> addNewTask(@RequestBody TaskDto taskDto) {
+        if (!taskService.addTask(taskDto)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     @GetMapping("/getTasks/{username}")
-    public ResponseEntity<?> getAllTasks(@PathVariable(name = "username") String username){
+    public ResponseEntity<?> getAllTasks(@PathVariable(name = "username") String username) {
         return new ResponseEntity<>(taskService.getAllTasks(username), HttpStatus.OK);
+    }
+
+    @GetMapping("/getTaskById/{idTask}")
+    public ResponseEntity<?> getTaskById(@PathVariable(name ="idTask") long idTask){
+        taskService.getTaskById(idTask);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteTask/{idTask}")
+    public ResponseEntity<?> deleteTask(@PathVariable(name = "idTask") long idTask) {
+        if (taskService.deleteTask(idTask)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
