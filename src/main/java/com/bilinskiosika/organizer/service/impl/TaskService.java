@@ -63,7 +63,20 @@ public class TaskService implements ITaskService {
 
     @Override
     public TaskEditDto editTask(TaskEditDto taskEditDto, long idUser) {
-        return null;
+        Optional<Task> oldTask = taskRepository.findTaskByIdTask(taskEditDto.getIdTask());
+        if(oldTask.isPresent()){
+            //TODO napewno da się zrobić lepiej?
+            oldTask.get().setColor(taskEditDto.getColor());
+            oldTask.get().setTags(taskEditDto.getTags());
+            oldTask.get().setDescriptionTask(taskEditDto.getDescriptionTask());
+            oldTask.get().setTitleTask(taskEditDto.getTitleTask());
+            oldTask.get().setStartTask(Timestamp.valueOf(taskEditDto.getStartTask()));
+            oldTask.get().setEndTask(Timestamp.valueOf(taskEditDto.getEndTask()));
+            oldTask.get().setNotificationTask(Timestamp.valueOf(taskEditDto.getNotificationTask()));
+
+            return new TaskEditDto();
+        }
+        return new TaskEditDto();
     }
 
     @Override
