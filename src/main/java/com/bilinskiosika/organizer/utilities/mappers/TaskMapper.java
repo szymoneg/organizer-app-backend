@@ -2,6 +2,7 @@ package com.bilinskiosika.organizer.utilities.mappers;
 
 import com.bilinskiosika.organizer.domain.dto.TaskDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
+import com.bilinskiosika.organizer.domain.dto.TaskEditDto;
 import com.bilinskiosika.organizer.domain.entity.Task;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +52,21 @@ public class TaskMapper {
         }
     }
 
+    public TaskEditDto taskToEditDto(Task task){
+        try{
+            return TaskEditDto.builder()
+                    .idTask(task.getIdTask())
+                    .titleTask(task.getTitleTask())
+                    .descriptionTask(task.getDescriptionTask())
+                    .startTask(task.getStartTask().toString())
+                    .endTask(task.getEndTask().toString())
+                    .tags(task.getTags())
+                    .color(task.getColor())
+                    .notificationTask(task.getNotificationTask().toString())
+                    .build();
+        }catch(Exception e) {
+            e.printStackTrace();
+            return new TaskEditDto();
+        }
+    }
 }

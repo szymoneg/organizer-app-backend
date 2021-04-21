@@ -12,6 +12,8 @@ import com.bilinskiosika.organizer.utilities.mappers.TaskMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +46,8 @@ public class TaskService implements ITaskService {
             newTask.setNotificationTask(Timestamp.valueOf(taskDto.getNotificationTask()));
 
             taskRepository.save(newTask);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -53,10 +56,10 @@ public class TaskService implements ITaskService {
     @Override
     public List<TaskDto> getAllTasks(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             System.out.println("Username doesn't exist!");
             return Collections.emptyList();
-        }else {
+        } else {
             return taskMapper.taskToDtoMapper(taskRepository.findTaskByUser(user.get()));
         }
     }
@@ -64,17 +67,18 @@ public class TaskService implements ITaskService {
     @Override
     public TaskEditDto editTask(TaskEditDto taskEditDto, long idUser) {
         Optional<Task> oldTask = taskRepository.findTaskByIdTask(taskEditDto.getIdTask());
-        if(oldTask.isPresent()){
+        if (oldTask.isPresent()) {
             //TODO napewno da się zrobić lepiej?
-            oldTask.get().setColor(taskEditDto.getColor());
-            oldTask.get().setTags(taskEditDto.getTags());
-            oldTask.get().setDescriptionTask(taskEditDto.getDescriptionTask());
-            oldTask.get().setTitleTask(taskEditDto.getTitleTask());
-            oldTask.get().setStartTask(Timestamp.valueOf(taskEditDto.getStartTask()));
-            oldTask.get().setEndTask(Timestamp.valueOf(taskEditDto.getEndTask()));
-            oldTask.get().setNotificationTask(Timestamp.valueOf(taskEditDto.getNotificationTask()));
+            Task newTask = oldTask.get();
+            newTask.setColor(taskEditDto.getColor());
+            newTask.setTags(taskEditDto.getTags());
+            newTask.setDescriptionTask(taskEditDto.getDescriptionTask());
+            newTask.setTitleTask(taskEditDto.getTitleTask());
+            newTask.setStartTask(Timestamp.valueOf(taskEditDto.getStartTask()));
+            newTask.setEndTask(Timestamp.valueOf(taskEditDto.getEndTask()));
+            newTask.setNotificationTask(Timestamp.valueOf(taskEditDto.getNotificationTask()));
 
-            return new TaskEditDto();
+            return taskMapper.taskToEditDto(newTask);
         }
         return new TaskEditDto();
     }
@@ -88,7 +92,7 @@ public class TaskService implements ITaskService {
     @Override
     public boolean deleteTask(long idTask) {
         Optional<Task> removedTask = taskRepository.findTaskByIdTask(idTask);
-        if(removedTask.isEmpty()){
+        if (removedTask.isEmpty()) {
             System.out.println("Task doesn't exist");
             return false;
         }
@@ -97,7 +101,18 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public List<TaskDetailsDto> getTasksBetweenDate(String firstDate, String secondDate) {
-        return null;
+    public List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            List<Task> findTasks = taskRepository.findAllTasksByDate(formatter.parse(firstDate), formatter.parse(secondDate));
+            if (findTasks.isEmpty()) {
+                return Collections.emptyList();
+            } else {
+                return taskMapper.taskToDtoMapper(findTasks);
+            }
+        }catch (ParseException ex){
+            ex.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 }

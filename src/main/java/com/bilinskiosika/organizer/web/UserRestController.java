@@ -51,7 +51,7 @@ public class UserRestController {
 
     @PostMapping("/register")
     public ResponseEntity<?> addUser(@RequestBody UserDto user) {
-        if (userService.findByUsername(user) == null) {
+        if (!userService.findByUsername(user).isPresent()) {
             return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
         } else
             return new ResponseEntity<>("username: " + user.getUsername() + "is already taken", HttpStatus.BAD_REQUEST);

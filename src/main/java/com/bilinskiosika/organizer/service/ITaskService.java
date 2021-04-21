@@ -4,6 +4,7 @@ import com.bilinskiosika.organizer.domain.dto.TaskDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
 import com.bilinskiosika.organizer.domain.dto.TaskEditDto;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface ITaskService {
@@ -18,7 +19,6 @@ public interface ITaskService {
 
     boolean deleteTask(long idTask);
 
-    List<TaskDetailsDto> getTasksBetweenDate(String firstDate, String secondDate);
-
+    List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) throws ParseException;
 
 }

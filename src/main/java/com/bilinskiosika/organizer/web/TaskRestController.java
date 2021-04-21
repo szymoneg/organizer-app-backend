@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/task")
@@ -45,5 +47,10 @@ public class TaskRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/getTasks")
+    public ResponseEntity<?> getTaskByDate(@RequestParam String firstDate, @RequestParam String secondDate) throws ParseException {
+        return new ResponseEntity<>(taskService.getTasksBetweenDate(firstDate, secondDate), HttpStatus.OK);
     }
 }
