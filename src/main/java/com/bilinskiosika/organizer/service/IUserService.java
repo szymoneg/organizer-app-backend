@@ -1,12 +1,13 @@
 package com.bilinskiosika.organizer.service;
 
+import com.bilinskiosika.organizer.domain.dto.UserDataDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
-import com.bilinskiosika.organizer.domain.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface IUserService {
 
-    User addUser(UserDto user);
-    User findByUsername(UserDto user);
+    boolean addUser(UserDto user);
+    boolean editUser(UserDto user);
+    UserDataDto getUser(String username);
     UserDetails loadUserByUsername(String username);
 }

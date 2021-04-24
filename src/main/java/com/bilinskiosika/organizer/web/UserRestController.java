@@ -1,10 +1,13 @@
 package com.bilinskiosika.organizer.web;
 
 import com.bilinskiosika.organizer.config.JwtTokenUtil;
+import com.bilinskiosika.organizer.domain.dto.UserDataDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
 import com.bilinskiosika.organizer.domain.model.JwtRequest;
 import com.bilinskiosika.organizer.domain.model.JwtResponse;
 import com.bilinskiosika.organizer.service.IUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,8 @@ public class UserRestController {
     private final IUserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRestController.class);
+
 
     @Autowired
     public UserRestController(IUserService iUserService, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
@@ -31,9 +36,14 @@ public class UserRestController {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    @RequestMapping({"/hello"})
-    public String firstPage() {
-        return "Hello World";
+    @PostMapping("/register")
+    public ResponseEntity<?> addUser(@RequestBody UserDto user) {
+        if (userService.addUser(user)) {
+            LOGGER.info("add user: {}", user);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else
+            LOGGER.info("username already taken: {}", user.getUsername());
+        return new ResponseEntity<>("username: " + user.getUsername() + " is already taken", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
@@ -49,12 +59,26 @@ public class UserRestController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> addUser(@RequestBody UserDto user) {
-        if (userService.findByUsername(user) == null) {
-            return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
+    @GetMapping("/data")
+    public ResponseEntity<?> getUser(@RequestParam String username) {
+        UserDataDto user = userService.getUser(username);
+        if (user.getUsername() != null) {
+            LOGGER.info("get user: {}", user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            LOGGER.info("Username not found: {}", username);
+            return new ResponseEntity<>("User with username: " + username + " does not exist", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<?> editUser(@RequestBody UserDto user) {
+        if (userService.editUser(user)) {
+            LOGGER.info("edit user: {}", user.getUsername());
+            return new ResponseEntity<>(HttpStatus.OK);
         } else
-            return new ResponseEntity<>("username: " + user.getUsername() + "is already taken", HttpStatus.BAD_REQUEST);
+            LOGGER.info("Username not found: {}", user.getUsername());
+        return new ResponseEntity<>("User with username: " + user.getUsername() + " does not exist", HttpStatus.BAD_REQUEST);
     }
 
     private void authenticate(String username, String password) throws Exception {
