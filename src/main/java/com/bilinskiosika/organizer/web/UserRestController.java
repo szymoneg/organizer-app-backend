@@ -1,8 +1,9 @@
 package com.bilinskiosika.organizer.web;
 
 import com.bilinskiosika.organizer.config.JwtTokenUtil;
-import com.bilinskiosika.organizer.domain.dto.UserDataDto;
+import com.bilinskiosika.organizer.domain.dto.UserDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
+import com.bilinskiosika.organizer.domain.dto.UserEditDto;
 import com.bilinskiosika.organizer.domain.model.JwtRequest;
 import com.bilinskiosika.organizer.domain.model.JwtResponse;
 import com.bilinskiosika.organizer.service.IUserService;
@@ -59,9 +60,9 @@ public class UserRestController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    @GetMapping("/data")
+    @GetMapping("/details")
     public ResponseEntity<?> getUser(@RequestParam String username) {
-        UserDataDto user = userService.getUser(username);
+        UserDetailsDto user = userService.getUser(username);
         if (user.getUsername() != null) {
             LOGGER.info("get user: {}", user);
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -72,7 +73,7 @@ public class UserRestController {
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<?> editUser(@RequestBody UserDto user) {
+    public ResponseEntity<?> editUser(@RequestBody UserEditDto user) {
         if (userService.editUser(user)) {
             LOGGER.info("edit user: {}", user.getUsername());
             return new ResponseEntity<>(HttpStatus.OK);

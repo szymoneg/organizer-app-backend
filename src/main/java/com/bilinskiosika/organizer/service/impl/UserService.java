@@ -1,7 +1,8 @@
 package com.bilinskiosika.organizer.service.impl;
 
-import com.bilinskiosika.organizer.domain.dto.UserDataDto;
+import com.bilinskiosika.organizer.domain.dto.UserDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
+import com.bilinskiosika.organizer.domain.dto.UserEditDto;
 import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.IUserService;
@@ -43,10 +44,10 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public UserDataDto getUser(String username) {
+    public UserDetailsDto getUser(String username) {
         try {
             User user = userRepository.findUserByUsername(username);
-            UserDataDto newUser = new UserDataDto();
+            UserDetailsDto newUser = new UserDetailsDto();
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
             newUser.setName(user.getName());
@@ -55,15 +56,14 @@ public class UserService implements IUserService, UserDetailsService {
             return newUser;
         } catch (Exception e) {
             //TODO error body
-            return new UserDataDto();
+            return new UserDetailsDto();
         }
     }
 
     @Override
-    public boolean editUser(UserDto user) {
+    public boolean editUser(UserEditDto user) {
         try {
             User newUser = userRepository.findUserByUsername(user.getUsername());
-            newUser.setEmail(user.getEmail());
             newUser.setName(user.getName());
             newUser.setSurname(user.getSurname());
             newUser.setPhoneNumber(user.getPhoneNumber());
