@@ -4,12 +4,14 @@ import com.bilinskiosika.organizer.domain.dto.NoteDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.NoteDto;
 import com.bilinskiosika.organizer.domain.dto.NoteEditDto;
 import com.bilinskiosika.organizer.domain.entity.Note;
+import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.repository.NoteRepository;
 import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.INoteService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NoteService implements INoteService {
@@ -75,7 +77,14 @@ public class NoteService implements INoteService {
 
     @Override
     public List<NoteDto> getAllNotes(String username) {
-
-        return null;
+        User user = userRepository.findUserByUsername(username);
+        List<Note> notesList = noteRepository.findNotesByUser(user);
+        return notesList
+                .stream()
+                .map(note -> new NoteDto(
+                        user.getIdUser(),
+                        note.getTitleNote(),
+                        note.getDescriptionNote())
+                ).collect(Collectors.toList());
     }
 }

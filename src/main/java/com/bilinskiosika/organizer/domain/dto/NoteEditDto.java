@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class NoteEditDto {
-    private long idNote;
+    private Long idNote;
     private String titleNote;
     private String descriptionNote;
 }

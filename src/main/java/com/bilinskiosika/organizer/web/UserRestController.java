@@ -60,8 +60,8 @@ public class UserRestController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    @GetMapping("/details")
-    public ResponseEntity<?> getUser(@RequestParam String username) {
+    @GetMapping("/details/{username}")
+    public ResponseEntity<?> getUser(@PathVariable String username) {
         UserDetailsDto user = userService.getUser(username);
         if (user.getUsername() != null) {
             LOGGER.info("get user: {}", user);
@@ -72,7 +72,7 @@ public class UserRestController {
         }
     }
 
-    @PostMapping("/edit")
+    @PutMapping("/edit")
     public ResponseEntity<?> editUser(@RequestBody UserEditDto user) {
         if (userService.editUser(user)) {
             LOGGER.info("edit user: {}", user.getUsername());
