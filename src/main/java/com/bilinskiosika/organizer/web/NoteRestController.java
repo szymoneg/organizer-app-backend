@@ -2,6 +2,7 @@ package com.bilinskiosika.organizer.web;
 
 import com.bilinskiosika.organizer.domain.dto.NoteDto;
 import com.bilinskiosika.organizer.domain.dto.NoteEditDto;
+import com.bilinskiosika.organizer.domain.entity.Note;
 import com.bilinskiosika.organizer.service.INoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +24,9 @@ public class NoteRestController {
 
     @PostMapping("/add")
     public ResponseEntity<?> editNote(@RequestBody NoteDto noteDto) {
-        if (noteService.addNote(noteDto)) {
-            LOGGER.info("add note: {}", noteDto);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Note newNote = noteService.addNote(noteDto);
+        LOGGER.info("add note: {}", newNote);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/getById/{idNote}")
@@ -43,23 +41,16 @@ public class NoteRestController {
 
     @PutMapping("/edit")
     public ResponseEntity<?> addNewNote(@RequestBody NoteEditDto noteEditDto) {
-        if (noteService.editNote(noteEditDto)) {
-            LOGGER.info("edit note: {}", noteEditDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            LOGGER.info("note with id:" + noteEditDto.getIdNote() + " does not exist");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Note newNote = noteService.editNote(noteEditDto);
+        LOGGER.info("edit note: {}", newNote);
+        return new ResponseEntity<>(newNote, HttpStatus.OK);
     }
+
     @DeleteMapping("/deleteById/{idNote}")
     public ResponseEntity<?> deleteNote(@PathVariable Long idNote) {
-        if(noteService.deleteNote(idNote)){
-            LOGGER.info("delete note: {}", idNote);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            LOGGER.info("note with id:" + idNote + " does not exist");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Note deletedNote =  noteService.deleteNote(idNote);
+            LOGGER.info("delete note: {}", deletedNote);
+            return new ResponseEntity<>(deletedNote, HttpStatus.OK);
     }
 
 }

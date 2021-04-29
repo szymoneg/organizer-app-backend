@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -26,7 +27,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     //TODO mappers
     @Override
-    public boolean addUser(UserDto user) {
+    public User addUser(UserDto user) {
         User newUser = new User();
         try {
             newUser.setUsername(user.getUsername());
@@ -36,52 +37,52 @@ public class UserService implements IUserService, UserDetailsService {
             newUser.setSurname(user.getSurname());
             newUser.setPhoneNumber(user.getPhoneNumber());
             userRepository.save(newUser);
-            return true;
+            return newUser;
         } catch (Exception e) {
             //TODO error body
-            return false;
+            return new User();
         }
     }
 
     @Override
     public UserDetailsDto getUser(String username) {
-        try {
-            User user = userRepository.findUserByUsername(username);
+        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        if (optionalUser.isPresent()) {
             UserDetailsDto newUser = new UserDetailsDto();
-            newUser.setUsername(user.getUsername());
-            newUser.setEmail(user.getEmail());
-            newUser.setName(user.getName());
-            newUser.setSurname(user.getSurname());
-            newUser.setPhoneNumber(user.getPhoneNumber());
+            newUser.setUsername(optionalUser.get().getUsername());
+            newUser.setEmail(optionalUser.get().getEmail());
+            newUser.setName(optionalUser.get().getName());
+            newUser.setSurname(optionalUser.get().getSurname());
+            newUser.setPhoneNumber(optionalUser.get().getPhoneNumber());
             return newUser;
-        } catch (Exception e) {
-            //TODO error body
-            return new UserDetailsDto();
         }
+        return new UserDetailsDto();
     }
 
     @Override
-    public boolean editUser(UserEditDto user) {
-        try {
-            User newUser = userRepository.findUserByUsername(user.getUsername());
+    public User editUser(UserEditDto user) {
+
+        Optional<User> optionalUser = userRepository.findUserByUsername(user.getUsername());
+        if (optionalUser.isPresent()) {
+            User newUser = optionalUser.get();
             newUser.setName(user.getName());
             newUser.setSurname(user.getSurname());
             newUser.setPhoneNumber(user.getPhoneNumber());
             userRepository.save(newUser);
-            return true;
-        } catch (Exception e) {
-            //TODO error body
-            return false;
+            return newUser;
         }
+
+        return new User();
+
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUsername(username);
-        if (user == null) {
+        Optional<User> user = userRepository.findUserByUsername(username);
+        if (user.isPresent()) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+        return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
                 new ArrayList<>());
     }
 }

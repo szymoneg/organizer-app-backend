@@ -10,7 +10,9 @@ import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.INoteService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,66 +27,67 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public boolean addNote(NoteDto noteDto) {
+    public Note addNote(NoteDto noteDto) {
         Note newNote = new Note();
-        try {
-            newNote.setUser(userRepository.findUserByIdUser(noteDto.getIdUser()));
+        Optional<User> optionalUser = userRepository.findUserByIdUser(noteDto.getIdUser());
+        if (optionalUser.isPresent()) {
+            newNote.setUser(optionalUser.get());
             newNote.setTitleNote(noteDto.getTitleNote());
             newNote.setDescriptionNote(noteDto.getDescriptionNote());
             noteRepository.save(newNote);
-            return true;
-        } catch (Exception e) {
-            //TODO error body
-            return false;
+            return newNote;
         }
+        return new Note();
     }
 
     @Override
-    public boolean editNote(NoteEditDto noteEditDto) {
-        try {
-            Note newNote = noteRepository.findNoteByIdNote(noteEditDto.getIdNote());
+    public Note editNote(NoteEditDto noteEditDto) {
+        Optional<Note> optionalNote = noteRepository.findNoteByIdNote(noteEditDto.getIdNote());
+        if (optionalNote.isPresent()) {
+            Note newNote = optionalNote.get();
             newNote.setTitleNote(noteEditDto.getTitleNote());
             newNote.setDescriptionNote(noteEditDto.getDescriptionNote());
             noteRepository.save(newNote);
-            return true;
-        } catch (Exception e) {
-            //TODO error body
-            return false;
+            return newNote;
         }
+        return new Note();
     }
 
     @Override
-    public boolean deleteNote(long idNote) {
-        try {
-            Note removedNote = noteRepository.findNoteByIdNote(idNote);
-            noteRepository.delete(removedNote);
-            return true;
-        } catch (Exception e) {
-            //TODO error body
-            return false;
+    public Note deleteNote(long idNote) {
+        Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
+        if (optionalNote.isPresent()) {
+            noteRepository.delete(optionalNote.get());
+            return optionalNote.get();
         }
+        return new Note();
     }
 
     @Override
     public NoteDetailsDto getNoteById(long idNote) {
-        //TODO mappers
-        Note note = noteRepository.findNoteByIdNote(idNote);
-        NoteDetailsDto noteDetailsDto = new NoteDetailsDto();
-        noteDetailsDto.setTitleNote(note.getTitleNote());
-        noteDetailsDto.setDescriptionNote(note.getDescriptionNote());
-        return noteDetailsDto;
+        Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
+        if (optionalNote.isPresent()) {
+            NoteDetailsDto noteDetailsDto = new NoteDetailsDto();
+            noteDetailsDto.setTitleNote(optionalNote.get().getTitleNote());
+            noteDetailsDto.setDescriptionNote(optionalNote.get().getDescriptionNote());
+            return noteDetailsDto;
+        }
+        return new NoteDetailsDto();
     }
 
     @Override
     public List<NoteDto> getAllNotes(String username) {
-        User user = userRepository.findUserByUsername(username);
-        List<Note> notesList = noteRepository.findNotesByUser(user);
-        return notesList
-                .stream()
-                .map(note -> new NoteDto(
-                        user.getIdUser(),
-                        note.getTitleNote(),
-                        note.getDescriptionNote())
-                ).collect(Collectors.toList());
+        Optional<User> optionalUser = userRepository.findUserByUsername(username);
+        if (optionalUser.isPresent()) {
+            List<Note> notesList = noteRepository.findNotesByUser(optionalUser.get());
+            return notesList
+                    .stream()
+                    .map(note -> new NoteDto(
+                            optionalUser.get().getIdUser(),
+                            note.getTitleNote(),
+                            note.getDescriptionNote())
+                    ).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }
