@@ -3,116 +3,60 @@ package com.bilinskiosika.organizer.service.impl;
 import com.bilinskiosika.organizer.domain.dto.TaskDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.TaskDto;
 import com.bilinskiosika.organizer.domain.dto.TaskEditDto;
-import com.bilinskiosika.organizer.domain.entity.Task;
-import com.bilinskiosika.organizer.domain.entity.User;
-import com.bilinskiosika.organizer.domain.repository.TaskRepository;
-import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.ITaskService;
-import com.bilinskiosika.organizer.utilities.mappers.TaskMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService implements ITaskService {
-
-    final TaskRepository taskRepository;
-    final UserRepository userRepository;
-    final TaskMapper taskMapper;
-
-    public TaskService(TaskRepository taskRepository, UserRepository userRepository, TaskMapper taskMapper) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-        this.taskMapper = taskMapper;
-    }
-
-
     @Override
     public boolean addTask(TaskDto taskDto) {
-        try {
-            Task newTask = new Task();
-            newTask.setUser(userRepository.findByIdUser(taskDto.getIdUser()));
-            newTask.setTitleTask(taskDto.getTitleTask());
-            newTask.setDescriptionTask(taskDto.getDescriptionTask());
-            newTask.setStartTask(Timestamp.valueOf(taskDto.getStartTask()));
-            newTask.setEndTask(Timestamp.valueOf(taskDto.getEndTask()));
-            newTask.setTags(taskDto.getTags());
-            newTask.setColor(taskDto.getColor());
-            newTask.setNotificationTask(Timestamp.valueOf(taskDto.getNotificationTask()));
 
-            taskRepository.save(newTask);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+
+        return false;
     }
 
     @Override
     public List<TaskDto> getAllTasks(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            System.out.println("Username doesn't exist!");
-            return Collections.emptyList();
-        } else {
-            return taskMapper.taskToDtoMapper(taskRepository.findTaskByUser(user.get()));
-        }
-    }
-
-    @Override
-    public TaskEditDto editTask(TaskEditDto taskEditDto, long idUser) {
-        Optional<Task> oldTask = taskRepository.findTaskByIdTask(taskEditDto.getIdTask());
-        if (oldTask.isPresent()) {
-            //TODO napewno da się zrobić lepiej?
-            Task newTask = oldTask.get();
-            newTask.setColor(taskEditDto.getColor());
-            newTask.setTags(taskEditDto.getTags());
-            newTask.setDescriptionTask(taskEditDto.getDescriptionTask());
-            newTask.setTitleTask(taskEditDto.getTitleTask());
-            newTask.setStartTask(Timestamp.valueOf(taskEditDto.getStartTask()));
-            newTask.setEndTask(Timestamp.valueOf(taskEditDto.getEndTask()));
-            newTask.setNotificationTask(Timestamp.valueOf(taskEditDto.getNotificationTask()));
-
-            return taskMapper.taskToEditDto(newTask);
-        }
-        return new TaskEditDto();
+        return null;
     }
 
     @Override
     public TaskDetailsDto getTaskById(long idTask) {
-        TaskDetailsDto taskDetailsDto = taskMapper.taskToDetailsDto(taskRepository.findTaskByIdTask(idTask));
-        return taskDetailsDto;
+        return null;
+    }
+
+    @Override
+    public TaskEditDto editTask(TaskEditDto taskEditDto, long idUser) {
+        return null;
     }
 
     @Override
     public boolean deleteTask(long idTask) {
-        Optional<Task> removedTask = taskRepository.findTaskByIdTask(idTask);
-        if (removedTask.isEmpty()) {
-            System.out.println("Task doesn't exist");
-            return false;
-        }
-        taskRepository.delete(removedTask.get());
-        return true;
+        return false;
     }
 
     @Override
-    public List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            List<Task> findTasks = taskRepository.findAllTasksByDate(formatter.parse(firstDate), formatter.parse(secondDate));
-            if (findTasks.isEmpty()) {
-                return Collections.emptyList();
-            } else {
-                return taskMapper.taskToDtoMapper(findTasks);
-            }
-        }catch (ParseException ex){
-            ex.printStackTrace();
-            return Collections.emptyList();
-        }
+    public List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) throws ParseException {
+        return null;
     }
+
+
+//    @Override
+//    public List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) {
+//        try {
+//            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//            List<Task> findTasks = taskRepository.findAllTasksByDate(formatter.parse(firstDate), formatter.parse(secondDate));
+//            if (findTasks.isEmpty()) {
+//                return Collections.emptyList();
+//            } else {
+//                return taskMapper.taskToDtoMapper(findTasks);
+//            }
+//        }catch (ParseException ex){
+//            ex.printStackTrace();
+//            return Collections.emptyList();
+//        }
+//    }
 }

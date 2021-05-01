@@ -38,6 +38,9 @@ public class TaskRestController {
     @GetMapping("/getTaskById/{idTask}")
     public ResponseEntity<?> getTaskById(@PathVariable(name ="idTask") long idTask){
         taskService.getTaskById(idTask);
+        if(taskService.getTaskById(idTask) == null){
+
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
