@@ -1,17 +1,18 @@
 package com.bilinskiosika.organizer.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.bilinskiosika.organizer.domain.dto.TaskDto;
+import com.bilinskiosika.organizer.utilities.mappers.TaskDetailsDtoMapper;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "tasks")
 public class Task {
@@ -44,4 +45,15 @@ public class Task {
     @Column(name = "notification_task")
     private Timestamp notificationTask;
 
+    public Optional<TaskDto> dto(){
+        return Optional.ofNullable(TaskDto.builder()
+                .titleTask(this.titleTask)
+                .descriptionTask(this.descriptionTask)
+                .startTask(String.valueOf(this.startTask))
+                .endTask(String.valueOf(this.endTask))
+                .tags(this.tags)
+                .color(this.color)
+                .notificationTask(String.valueOf(this.notificationTask))
+                .build());
+    }
 }

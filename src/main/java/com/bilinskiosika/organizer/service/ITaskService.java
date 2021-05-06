@@ -6,18 +6,19 @@ import com.bilinskiosika.organizer.domain.dto.TaskEditDto;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 public interface ITaskService {
 
-    boolean addTask(TaskDto taskDto);
+    Optional<TaskDto> addTask(TaskDto taskDto);
 
     List<TaskDto> getAllTasks(String username);
 
     TaskDetailsDto getTaskById(long idTask);
 
-    TaskEditDto editTask(TaskEditDto taskEditDto, long idUser);
+    Optional<TaskDto> editTask(TaskEditDto taskEditDto, long idUser);
 
-    boolean deleteTask(long idTask);
+    void deleteTaskById(long idTask);
 
     List<TaskDto> getTasksBetweenDate(String firstDate, String secondDate) throws ParseException;
 
