@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @ToString
 public class TaskDetailsDto {
-    private long idTask;
+    //private long idTask;
     private String titleTask;
     private String descriptionTask;
     private String startTask;
