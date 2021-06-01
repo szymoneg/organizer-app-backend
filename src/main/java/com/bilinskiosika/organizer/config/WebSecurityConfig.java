@@ -17,27 +17,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private UserService userDetailsService;
 
-    @Autowired
-    private UserService userService;
+    private final JwtRequestFilter customJwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    public WebSecurityConfig(JwtRequestFilter customJwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.customJwtAuthenticationFilter = customJwtAuthenticationFilter;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -48,17 +48,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.csrf().disable()
-
-                .authorizeRequests().antMatchers("/authenticate", "/user/register", "/user/login","/task/add",
-                    "/user/showUserData/{idUser}","/task/getTasks/{username}", "/task/getTasks", "/task/getTaskById/{idTask}", "/task/getTasks/{username}").permitAll().
-                anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.csrf().disable().authorizeRequests()
+                .antMatchers("/server").hasRole("ENABLE")
+                .antMatchers("/authenticate", "/user/register", "/user/login", "/user/edit", "/user/details").permitAll().anyRequest().authenticated()
+                .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
