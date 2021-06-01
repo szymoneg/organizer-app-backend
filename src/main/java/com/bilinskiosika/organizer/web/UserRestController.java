@@ -64,7 +64,7 @@ public class UserRestController {
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
-
+  
     @RequestMapping(value = "/refreshtoken", method = RequestMethod.GET)
     public ResponseEntity<?> refreshtoken(HttpServletRequest request) throws Exception {
         DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
@@ -102,6 +102,12 @@ public class UserRestController {
         } else
             LOGGER.info("Username not found: {}", user.getUsername());
         return new ResponseEntity<>("User with username: " + user.getUsername() + " does not exist", HttpStatus.BAD_REQUEST);
+    }
+
+
+    @GetMapping("/showUserData/{idUser}")
+    public ResponseEntity<?> showUser(@PathVariable(name = "idUser") long idUser){
+        return new ResponseEntity<>(userService.findByIdUser(idUser), HttpStatus.OK);
     }
 
     private void authenticate(String username, String password) throws Exception {

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class UserService implements IUserService, UserDetailsService {
             return false;
         }
     }
-
+    
     @Override
     public UserDetailsDto getUser(String username) {
         try {
@@ -90,5 +91,10 @@ public class UserService implements IUserService, UserDetailsService {
             return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), roles);
         }
         throw new UsernameNotFoundException("User not found with the name " + username);
+    }
+
+    @Override
+    public User findByIdUser(long idUser) {
+        return userRepository.findByIdUser(idUser);
     }
 }
