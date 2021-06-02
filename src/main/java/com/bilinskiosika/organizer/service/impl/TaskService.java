@@ -39,8 +39,8 @@ public class TaskService implements ITaskService {
     @Override
     public Optional<TaskDto> addTask(TaskDto taskDto) {
         //TODO Opcjonalnie zrobić zebezpieczenie przed próbą dodania przez nieistniejącego użytkownika
-        User user = Optional.of(userRepository
-                .findByIdUser(taskDto.getIdUser()))
+        User user = userRepository
+                .findByIdUser(taskDto.getIdUser())
                 .orElseThrow(() -> new UserNotFoundException("username"));
 
         Task newTask = taskMapper.convert(taskDto).orElseThrow(BadRequestException::new);

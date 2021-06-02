@@ -85,17 +85,16 @@ public class UserService implements IUserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> roles = null;
 
-
-        User user = userRepository.findUserByUsername(username);
-        if (user != null) {
+        Optional<User> user = userRepository.findUserByUsername(username);
+        if (user.isPresent()) {
             roles = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ENABLE"));
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), roles);
+            return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), roles);
         }
         throw new UsernameNotFoundException("User not found with the name " + username);
     }
 
     @Override
     public User findByIdUser(long idUser) {
-        return userRepository.findByIdUser(idUser);
+        return userRepository.findByIdUser(idUser).get();
     }
 }

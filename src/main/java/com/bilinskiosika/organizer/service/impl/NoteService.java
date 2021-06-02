@@ -29,7 +29,7 @@ public class NoteService implements INoteService {
     @Override
     public Note addNote(NoteDto noteDto) {
         Note newNote = new Note();
-        Optional<User> optionalUser = userRepository.findUserByIdUser(noteDto.getIdUser());
+        Optional<User> optionalUser = userRepository.findByIdUser(noteDto.getIdUser());
         if (optionalUser.isPresent()) {
             newNote.setUser(optionalUser.get());
             newNote.setTitleNote(noteDto.getTitleNote());

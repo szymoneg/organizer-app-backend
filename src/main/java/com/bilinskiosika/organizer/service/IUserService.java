@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Optional;
 
 public interface IUserService {
-    boolean addUser(UserDto user);
-    boolean editUser(UserEditDto user);
+    User addUser(UserDto user);
+    User editUser(UserEditDto user);
     UserDetailsDto getUser(String username);
     UserDetails loadUserByUsername(String username);
     User findByIdUser(long idUser);

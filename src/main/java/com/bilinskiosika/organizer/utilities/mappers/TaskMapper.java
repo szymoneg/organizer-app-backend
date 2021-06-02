@@ -21,7 +21,7 @@ public class TaskMapper implements Converter<Optional<Task>, TaskDto> {
     @Override
     public Optional<Task> convert(TaskDto from) {
         return Optional.ofNullable(Task.builder()
-                .user(userRepository.findByIdUser(from.getIdUser()))
+                .user(userRepository.findByIdUser(from.getIdUser()).get())
                 .titleTask(from.getTitleTask())
                 .descriptionTask(from.getDescriptionTask())
                 .startTask(Timestamp.valueOf(from.getStartTask()))
