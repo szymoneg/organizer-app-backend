@@ -6,10 +6,12 @@ import com.bilinskiosika.organizer.domain.dto.UserEditDto;
 import com.bilinskiosika.organizer.domain.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public interface IUserService {
+import java.util.Optional;
 
-    User addUser(UserDto user);
-    User editUser(UserEditDto user);
+public interface IUserService {
+    boolean addUser(UserDto user);
+    boolean editUser(UserEditDto user);
     UserDetailsDto getUser(String username);
     UserDetails loadUserByUsername(String username);
+    User findByIdUser(long idUser);
 }
