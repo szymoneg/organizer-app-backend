@@ -4,6 +4,7 @@ import com.bilinskiosika.organizer.config.JwtTokenUtil;
 import com.bilinskiosika.organizer.domain.dto.UserDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
 import com.bilinskiosika.organizer.domain.dto.UserEditDto;
+import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.model.JwtRequest;
 import com.bilinskiosika.organizer.domain.model.JwtResponse;
 import com.bilinskiosika.organizer.service.IUserService;
@@ -44,12 +45,9 @@ public class UserRestController {
 
     @PostMapping("/register")
     public ResponseEntity<?> addUser(@RequestBody UserDto user) {
-        if (userService.addUser(user)) {
-            LOGGER.info("add user: {}", user);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else
-            LOGGER.info("username already taken: {}", user.getUsername());
-        return new ResponseEntity<>("username: " + user.getUsername() + " is already taken", HttpStatus.BAD_REQUEST);
+        User newUser = userService.addUser(user);
+        LOGGER.info("add user: {}", newUser);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -82,8 +80,8 @@ public class UserRestController {
         return expectedMap;
     }
 
-    @GetMapping("/details")
-    public ResponseEntity<?> getUser(@RequestParam String username) {
+    @GetMapping("/details/{username}")
+    public ResponseEntity<?> getUser(@PathVariable String username) {
         UserDetailsDto user = userService.getUser(username);
         if (user.getUsername() != null) {
             LOGGER.info("get user: {}", user);
@@ -94,14 +92,11 @@ public class UserRestController {
         }
     }
 
-    @PostMapping("/edit")
-    public ResponseEntity<?> editUser(@RequestBody UserEditDto user) {
-        if (userService.editUser(user)) {
-            LOGGER.info("edit user: {}", user.getUsername());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else
-            LOGGER.info("Username not found: {}", user.getUsername());
-        return new ResponseEntity<>("User with username: " + user.getUsername() + " does not exist", HttpStatus.BAD_REQUEST);
+    @PutMapping("/edit")
+    public ResponseEntity<?> editUser(@RequestBody UserEditDto userEditDto) {
+        User editedUser = userService.editUser(userEditDto);
+        LOGGER.info("edit user: {}", editedUser);
+        return new ResponseEntity<>(editedUser, HttpStatus.OK);
     }
 
 
