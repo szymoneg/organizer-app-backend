@@ -16,6 +16,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, CrudRepositor
 
     List<Task> findTaskByUser(User user);
 
+    Optional<Task> findByUser(User user);
+
     Optional<Task> findTaskByIdTask(long idTask);
 
     @Query("select t from Task t where t.startTask > ?1 and t.endTask < ?2")

@@ -43,9 +43,9 @@ public class TaskRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/editTask/{idUser}")
-    public ResponseEntity<?> editTask(@RequestBody TaskEditDto taskEditDto, @PathVariable(name = "idUser") long idUser){
-        return new ResponseEntity<>(taskService.editTask(taskEditDto, idUser), HttpStatus.OK);
+    @PutMapping("/editTask/{username}")
+    public ResponseEntity<?> editTask(@RequestBody TaskEditDto taskEditDto, @PathVariable(name = "username") String username){
+        return new ResponseEntity<>(taskService.editTask(taskEditDto, username), HttpStatus.OK);
     }
 
     @GetMapping("/getTasks")

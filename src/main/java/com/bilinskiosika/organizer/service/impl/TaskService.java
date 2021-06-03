@@ -68,9 +68,13 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public Optional<TaskDto> editTask(TaskEditDto taskEditDto, long idUser) {
+    public Optional<TaskDto> editTask(TaskEditDto taskEditDto, String username) {
+        User editUser = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
         Task oldTask = taskRepository
-                .findTaskByIdTask(taskEditDto.getIdTask())
+                .findByUser(editUser)
                 .orElseThrow(() -> new TaskNotFoundException(taskEditDto.getIdTask()));
 
         oldTask.setTitleTask(taskEditDto.getTitleTask());
