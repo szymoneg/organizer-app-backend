@@ -4,6 +4,7 @@ import com.bilinskiosika.organizer.config.JwtTokenUtil;
 import com.bilinskiosika.organizer.domain.dto.UserDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.UserDto;
 import com.bilinskiosika.organizer.domain.dto.UserEditDto;
+import com.bilinskiosika.organizer.domain.dto.UserLoginDto;
 import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.model.JwtRequest;
 import com.bilinskiosika.organizer.domain.model.JwtResponse;
@@ -55,12 +56,13 @@ public class UserRestController {
 
         authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
+
         final UserDetails userDetails = userService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new JwtResponse(token));
+       Long idUser = userService.getUserId(authenticationRequest.getUsername());
+        return ResponseEntity.ok(new UserLoginDto(idUser, token));
     }
   
     @RequestMapping(value = "/refreshtoken", method = RequestMethod.GET)

@@ -23,12 +23,11 @@ public class NoteRestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> editNote(@RequestBody NoteDto noteDto) {
+    public ResponseEntity<?> addNewNote(@RequestBody NoteDto noteDto) {
         Note newNote = noteService.addNote(noteDto);
         LOGGER.info("add note: {}", newNote);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
     @GetMapping("/getById/{idNote}")
     public ResponseEntity<?> getNoteById(@PathVariable Long idNote) {
         return new ResponseEntity<>(noteService.getNoteById(idNote), HttpStatus.OK);
@@ -40,7 +39,7 @@ public class NoteRestController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<?> addNewNote(@RequestBody NoteEditDto noteEditDto) {
+    public ResponseEntity<?> editNote(@RequestBody NoteEditDto noteEditDto) {
         Note newNote = noteService.editNote(noteEditDto);
         LOGGER.info("edit note: {}", newNote);
         return new ResponseEntity<>(newNote, HttpStatus.OK);
@@ -52,5 +51,4 @@ public class NoteRestController {
             LOGGER.info("delete note: {}", deletedNote);
             return new ResponseEntity<>(deletedNote, HttpStatus.OK);
     }
-
 }
