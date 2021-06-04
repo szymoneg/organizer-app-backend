@@ -3,6 +3,7 @@ package com.bilinskiosika.organizer.service.impl;
 import com.bilinskiosika.organizer.domain.dto.NoteDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.NoteDto;
 import com.bilinskiosika.organizer.domain.dto.NoteEditDto;
+import com.bilinskiosika.organizer.domain.dto.NoteInfoDto;
 import com.bilinskiosika.organizer.domain.entity.Note;
 import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.repository.NoteRepository;
@@ -27,7 +28,7 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public Note addNote(NoteDto noteDto) {
+    public NoteInfoDto addNote(NoteDto noteDto) {
         Note newNote = new Note();
         Optional<User> optionalUser = userRepository.findByIdUser(noteDto.getIdUser());
         if (optionalUser.isPresent()) {
@@ -35,32 +36,37 @@ public class NoteService implements INoteService {
             newNote.setTitleNote(noteDto.getTitleNote());
             newNote.setDescriptionNote(noteDto.getDescriptionNote());
             noteRepository.save(newNote);
-            return newNote;
+            return new NoteInfoDto(
+                    noteDto.getIdUser(),
+                    newNote.getIdNote(),
+                    noteDto.getTitleNote(),
+                    noteDto.getDescriptionNote());
         }
-        return new Note();
+        return new NoteInfoDto();
     }
 
     @Override
-    public Note editNote(NoteEditDto noteEditDto) {
+    public NoteEditDto editNote(NoteEditDto noteEditDto) {
         Optional<Note> optionalNote = noteRepository.findNoteByIdNote(noteEditDto.getIdNote());
         if (optionalNote.isPresent()) {
             Note newNote = optionalNote.get();
             newNote.setTitleNote(noteEditDto.getTitleNote());
             newNote.setDescriptionNote(noteEditDto.getDescriptionNote());
             noteRepository.save(newNote);
-            return newNote;
+            return NoteEditDto.builder()
+                    .idNote(noteEditDto.getIdNote())
+                    .titleNote(noteEditDto.getTitleNote())
+                    .descriptionNote(noteEditDto.getDescriptionNote())
+                    .build();
         }
-        return new Note();
+        return NoteEditDto.builder()
+                .build();
     }
 
     @Override
-    public Note deleteNote(long idNote) {
+    public void deleteNote(long idNote) {
         Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
-        if (optionalNote.isPresent()) {
-            noteRepository.delete(optionalNote.get());
-            return optionalNote.get();
-        }
-        return new Note();
+        optionalNote.ifPresent(noteRepository::delete);
     }
 
     @Override
@@ -76,14 +82,15 @@ public class NoteService implements INoteService {
     }
 
     @Override
-    public List<NoteDto> getAllNotes(String username) {
+    public List<NoteInfoDto> getAllNotes(String username) {
         Optional<User> optionalUser = userRepository.findUserByUsername(username);
         if (optionalUser.isPresent()) {
             List<Note> notesList = noteRepository.findNotesByUser(optionalUser.get());
             return notesList
                     .stream()
-                    .map(note -> new NoteDto(
+                    .map(note -> new NoteInfoDto(
                             optionalUser.get().getIdUser(),
+                            note.getIdNote(),
                             note.getTitleNote(),
                             note.getDescriptionNote())
                     ).collect(Collectors.toList());
