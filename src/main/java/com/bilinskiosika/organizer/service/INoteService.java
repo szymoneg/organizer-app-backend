@@ -3,19 +3,20 @@ package com.bilinskiosika.organizer.service;
 import com.bilinskiosika.organizer.domain.dto.NoteDetailsDto;
 import com.bilinskiosika.organizer.domain.dto.NoteDto;
 import com.bilinskiosika.organizer.domain.dto.NoteEditDto;
+import com.bilinskiosika.organizer.domain.dto.NoteInfoDto;
 import com.bilinskiosika.organizer.domain.entity.Note;
 
 import java.util.List;
 
 public interface INoteService {
 
-    Note addNote(NoteDto note);
+    NoteInfoDto addNote(NoteDto note);
 
-    Note editNote(NoteEditDto note);
+    NoteEditDto editNote(NoteEditDto note);
 
-    Note deleteNote(long idNote);
+    void deleteNote(long idNote);
 
     NoteDetailsDto getNoteById(long idNote);
 
-    List<NoteDto> getAllNotes(String username);
+    List<NoteInfoDto> getAllNotes(String username);
 }

@@ -2,6 +2,7 @@ package com.bilinskiosika.organizer.web;
 
 import com.bilinskiosika.organizer.domain.dto.NoteDto;
 import com.bilinskiosika.organizer.domain.dto.NoteEditDto;
+import com.bilinskiosika.organizer.domain.dto.NoteInfoDto;
 import com.bilinskiosika.organizer.domain.entity.Note;
 import com.bilinskiosika.organizer.service.INoteService;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public class NoteRestController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewNote(@RequestBody NoteDto noteDto) {
-        Note newNote = noteService.addNote(noteDto);
+        NoteInfoDto newNote = noteService.addNote(noteDto);
         LOGGER.info("add note: {}", newNote);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(newNote, HttpStatus.CREATED);
     }
     @GetMapping("/getById/{idNote}")
     public ResponseEntity<?> getNoteById(@PathVariable Long idNote) {
@@ -40,15 +41,15 @@ public class NoteRestController {
 
     @PutMapping("/edit")
     public ResponseEntity<?> editNote(@RequestBody NoteEditDto noteEditDto) {
-        Note newNote = noteService.editNote(noteEditDto);
+        NoteEditDto newNote = noteService.editNote(noteEditDto);
         LOGGER.info("edit note: {}", newNote);
         return new ResponseEntity<>(newNote, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteById/{idNote}")
     public ResponseEntity<?> deleteNote(@PathVariable Long idNote) {
-        Note deletedNote =  noteService.deleteNote(idNote);
-            LOGGER.info("delete note: {}", deletedNote);
-            return new ResponseEntity<>(deletedNote, HttpStatus.OK);
+        noteService.deleteNote(idNote);
+            LOGGER.info("delete note: {}", idNote);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
