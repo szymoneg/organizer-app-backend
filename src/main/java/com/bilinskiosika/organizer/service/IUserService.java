@@ -14,4 +14,5 @@ public interface IUserService {
     UserDetailsDto getUser(String username);
     UserDetails loadUserByUsername(String username);
     User findByIdUser(long idUser);
+    Long getUserId(String username);
 }
