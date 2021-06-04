@@ -13,6 +13,7 @@ public class TaskListMapper implements Converter<List<TaskDto>, List<Task>> {
     public List<TaskDto> convert(List<Task> from) {
         return from.stream().map(tasks -> {
             return TaskDto.builder()
+                    .idTask(tasks.getIdTask())
                     .titleTask(tasks.getTitleTask())
                     .color(tasks.getColor())
                     .descriptionTask(tasks.getDescriptionTask())
