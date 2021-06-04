@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 .antMatchers("/server").hasRole("ENABLE")
-                .antMatchers("/user/edit","/user/login", "/user/register","/details/{username}","/note/add"
+                .antMatchers("/user/edit","/user/login", "/user/register","/user/showUserData/{idUser}","/user/details/{username}","/note/add"
                         ,"/note/getById/{idNote}","/note/getAll/{username}","/note/edit","/note/deleteById/{idNote}"
                         ,"/task/add","/task/getTaskById/{idTask}"
                         ,"/task/deleteTask/{idTask}","/task/", "/task/getTasks/{username}","/task/editTask/{idUser}").permitAll().anyRequest().authenticated()
