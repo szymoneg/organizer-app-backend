@@ -16,7 +16,7 @@ public interface ITaskService {
 
     TaskDetailsDto getTaskById(long idTask);
 
-    Optional<TaskDto> editTask(TaskEditDto taskEditDto, long idUser);
+    Optional<TaskDto> editTask(TaskEditDto taskEditDto, String username);
 
     void deleteTaskById(long idTask);
 
