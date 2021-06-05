@@ -29,20 +29,23 @@ public class NoteService implements INoteService {
 
     @Override
     public NoteInfoDto addNote(NoteDto noteDto) {
-        Note newNote = new Note();
         Optional<User> optionalUser = userRepository.findByIdUser(noteDto.getIdUser());
         if (optionalUser.isPresent()) {
-            newNote.setUser(optionalUser.get());
-            newNote.setTitleNote(noteDto.getTitleNote());
-            newNote.setDescriptionNote(noteDto.getDescriptionNote());
+            Note newNote = Note.builder()
+                    .user(optionalUser.get())
+                    .titleNote(noteDto.getTitleNote())
+                    .descriptionNote(noteDto.getDescriptionNote())
+                    .build();
             noteRepository.save(newNote);
-            return new NoteInfoDto(
-                    noteDto.getIdUser(),
-                    newNote.getIdNote(),
-                    noteDto.getTitleNote(),
-                    noteDto.getDescriptionNote());
+            return NoteInfoDto.builder()
+                    .idUser(optionalUser.get().getIdUser())
+                    .idNote(newNote.getIdNote())
+                    .titleNote(newNote.getTitleNote())
+                    .descriptionNote(newNote.getDescriptionNote())
+                    .build();
         }
-        return new NoteInfoDto();
+        return NoteInfoDto.builder()
+                .build();
     }
 
     @Override
@@ -73,12 +76,13 @@ public class NoteService implements INoteService {
     public NoteDetailsDto getNoteById(long idNote) {
         Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
         if (optionalNote.isPresent()) {
-            NoteDetailsDto noteDetailsDto = new NoteDetailsDto();
-            noteDetailsDto.setTitleNote(optionalNote.get().getTitleNote());
-            noteDetailsDto.setDescriptionNote(optionalNote.get().getDescriptionNote());
-            return noteDetailsDto;
+            return NoteDetailsDto.builder()
+                    .titleNote(optionalNote.get().getTitleNote())
+                    .descriptionNote(optionalNote.get().getDescriptionNote())
+                    .build();
         }
-        return new NoteDetailsDto();
+        return NoteDetailsDto.builder()
+                .build();
     }
 
     @Override
@@ -88,11 +92,12 @@ public class NoteService implements INoteService {
             List<Note> notesList = noteRepository.findNotesByUser(optionalUser.get());
             return notesList
                     .stream()
-                    .map(note -> new NoteInfoDto(
-                            optionalUser.get().getIdUser(),
-                            note.getIdNote(),
-                            note.getTitleNote(),
-                            note.getDescriptionNote())
+                    .map(note -> NoteInfoDto.builder()
+                            .idUser(optionalUser.get().getIdUser())
+                            .idNote(note.getIdNote())
+                            .titleNote(note.getTitleNote())
+                            .descriptionNote(note.getDescriptionNote())
+                            .build()
                     ).collect(Collectors.toList());
         }
         return Collections.emptyList();
