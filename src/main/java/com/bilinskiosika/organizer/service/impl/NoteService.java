@@ -9,9 +9,10 @@ import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.repository.NoteRepository;
 import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.INoteService;
+import com.bilinskiosika.organizer.utilities.exceptions.NoteNotFoundException;
+import com.bilinskiosika.organizer.utilities.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,38 +30,43 @@ public class NoteService implements INoteService {
 
     @Override
     public NoteInfoDto addNote(NoteDto noteDto) {
-        Note newNote = new Note();
-        Optional<User> optionalUser = userRepository.findByIdUser(noteDto.getIdUser());
-        if (optionalUser.isPresent()) {
-            newNote.setUser(optionalUser.get());
-            newNote.setTitleNote(noteDto.getTitleNote());
-            newNote.setDescriptionNote(noteDto.getDescriptionNote());
-            noteRepository.save(newNote);
-            return new NoteInfoDto(
-                    noteDto.getIdUser(),
-                    newNote.getIdNote(),
-                    noteDto.getTitleNote(),
-                    noteDto.getDescriptionNote());
-        }
-        return new NoteInfoDto();
+        User user = userRepository
+                .findByIdUser(noteDto.getIdUser())
+                .orElseThrow(() -> new UserNotFoundException("username"));
+
+        Note newNote = Note.builder()
+                .user(user)
+                .titleNote(noteDto.getTitleNote())
+                .descriptionNote(noteDto.getDescriptionNote())
+                .build();
+        noteRepository.save(newNote);
+
+        return NoteInfoDto.builder()
+                .idUser(user.getIdUser())
+                .idNote(newNote.getIdNote())
+                .titleNote(newNote.getTitleNote())
+                .descriptionNote(newNote.getDescriptionNote())
+                .build();
+
     }
 
     @Override
     public NoteEditDto editNote(NoteEditDto noteEditDto) {
-        Optional<Note> optionalNote = noteRepository.findNoteByIdNote(noteEditDto.getIdNote());
-        if (optionalNote.isPresent()) {
-            Note newNote = optionalNote.get();
-            newNote.setTitleNote(noteEditDto.getTitleNote());
-            newNote.setDescriptionNote(noteEditDto.getDescriptionNote());
-            noteRepository.save(newNote);
-            return NoteEditDto.builder()
-                    .idNote(noteEditDto.getIdNote())
-                    .titleNote(noteEditDto.getTitleNote())
-                    .descriptionNote(noteEditDto.getDescriptionNote())
-                    .build();
-        }
+        Note note = noteRepository
+                .findNoteByIdNote(noteEditDto.getIdNote())
+                .orElseThrow(() -> new NoteNotFoundException(noteEditDto.getIdNote()));
+
+        note.setTitleNote(noteEditDto.getTitleNote());
+        note.setDescriptionNote(noteEditDto.getDescriptionNote());
+
+        noteRepository.save(note);
+
         return NoteEditDto.builder()
+                .idNote(noteEditDto.getIdNote())
+                .titleNote(noteEditDto.getTitleNote())
+                .descriptionNote(noteEditDto.getDescriptionNote())
                 .build();
+
     }
 
     @Override
@@ -71,30 +77,29 @@ public class NoteService implements INoteService {
 
     @Override
     public NoteDetailsDto getNoteById(long idNote) {
-        Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
-        if (optionalNote.isPresent()) {
-            NoteDetailsDto noteDetailsDto = new NoteDetailsDto();
-            noteDetailsDto.setTitleNote(optionalNote.get().getTitleNote());
-            noteDetailsDto.setDescriptionNote(optionalNote.get().getDescriptionNote());
-            return noteDetailsDto;
-        }
-        return new NoteDetailsDto();
+        Note note = noteRepository
+                .findNoteByIdNote(idNote)
+                .orElseThrow(() -> new NoteNotFoundException(idNote));
+        return NoteDetailsDto.builder()
+                .titleNote(note.getTitleNote())
+                .descriptionNote(note.getDescriptionNote())
+                .build();
     }
 
     @Override
     public List<NoteInfoDto> getAllNotes(String username) {
-        Optional<User> optionalUser = userRepository.findUserByUsername(username);
-        if (optionalUser.isPresent()) {
-            List<Note> notesList = noteRepository.findNotesByUser(optionalUser.get());
-            return notesList
-                    .stream()
-                    .map(note -> new NoteInfoDto(
-                            optionalUser.get().getIdUser(),
-                            note.getIdNote(),
-                            note.getTitleNote(),
-                            note.getDescriptionNote())
-                    ).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
+        User user = userRepository
+                .findUserByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+        List<Note> notesList = noteRepository.findNotesByUser(user);
+        return notesList
+                .stream()
+                .map(note -> NoteInfoDto.builder()
+                        .idUser(user.getIdUser())
+                        .idNote(note.getIdNote())
+                        .titleNote(note.getTitleNote())
+                        .descriptionNote(note.getDescriptionNote())
+                        .build()
+                ).collect(Collectors.toList());
     }
 }

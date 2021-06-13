@@ -1,9 +1,10 @@
 package com.bilinskiosika.organizer.domain.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+
 @Data
-@AllArgsConstructor
+@Builder
 public class NoteDto {
     private Long idUser;
     private String titleNote;
