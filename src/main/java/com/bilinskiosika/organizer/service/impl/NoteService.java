@@ -28,6 +28,12 @@ public class NoteService implements INoteService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * <p>This is a description of the add note method</p>
+     * @param noteDto object represents note
+     * @return note data
+     * @throws UserNotFoundException username not found
+     */
     @Override
     public NoteInfoDto addNote(NoteDto noteDto) {
         User user = userRepository
@@ -50,6 +56,12 @@ public class NoteService implements INoteService {
 
     }
 
+    /**
+     * <p>This is a description of the edit note method</p>
+     * @param noteEditDto object represents data necessary to edit a note
+     * @return note data
+     * @throws NoteNotFoundException note not found
+     */
     @Override
     public NoteEditDto editNote(NoteEditDto noteEditDto) {
         Note note = noteRepository
@@ -69,12 +81,22 @@ public class NoteService implements INoteService {
 
     }
 
+    /**
+     * <p>This is a description of the delete note method</p>
+     * @param idNote id note to delete note
+     */
     @Override
     public void deleteNote(long idNote) {
         Optional<Note> optionalNote = noteRepository.findNoteByIdNote(idNote);
         optionalNote.ifPresent(noteRepository::delete);
     }
 
+    /**
+     * <p>This is a description of the get single note by id method</p>
+     * @param idNote id note to get note data
+     * @return note data find by id note
+     * @throws NoteNotFoundException note not found
+     */
     @Override
     public NoteDetailsDto getNoteById(long idNote) {
         Note note = noteRepository
@@ -86,6 +108,12 @@ public class NoteService implements INoteService {
                 .build();
     }
 
+    /**
+     * <p>This is a description of the return all user note method</p>
+     * @param username id note to get note data
+     * @return all user note
+     * @throws UserNotFoundException username not found
+     */
     @Override
     public List<NoteInfoDto> getAllNotes(String username) {
         User user = userRepository
