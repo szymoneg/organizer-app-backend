@@ -6,6 +6,7 @@ import com.bilinskiosika.organizer.domain.dto.UserEditDto;
 import com.bilinskiosika.organizer.domain.entity.User;
 import com.bilinskiosika.organizer.domain.repository.UserRepository;
 import com.bilinskiosika.organizer.service.IUserService;
+import com.bilinskiosika.organizer.utilities.exceptions.NoteNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.Collections;
 import java.util.List;
 
+
 @Service
 public class UserService implements IUserService, UserDetailsService {
 
@@ -28,8 +30,11 @@ public class UserService implements IUserService, UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    //TODO mappers
+    /**
+     * <p>This is a description of the add new user method</p>
+     * @param user object represents data necessary to create new user
+     * @return created user
+     */
     @Override
     public User addUser(UserDto user) {
         User newUser = new User();
@@ -48,6 +53,11 @@ public class UserService implements IUserService, UserDetailsService {
         }
     }
 
+    /**
+     * <p>This is a description of the get user by username method</p>
+     * @param username value need to find user in database
+     * @return found user or empty object
+     */
     @Override
     public UserDetailsDto getUser(String username) {
         Optional<User> optionalUser = userRepository.findUserByUsername(username);
@@ -63,6 +73,11 @@ public class UserService implements IUserService, UserDetailsService {
         return new UserDetailsDto();
     }
 
+    /**
+     * <p>This is a description of the edit user method</p>
+     * @param user object represents data necessary to edit user
+     * @return edited user
+     */
     @Override
     public User editUser(UserEditDto user) {
 
