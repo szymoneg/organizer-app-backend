@@ -118,3 +118,83 @@ Odpowiedz serwera
 127.0.0.1:8080/note/deleteById/{idNote}
 127.0.0.1:8080/note/deleteById/21
 ```
+
+# Task service
+
+### Dodanie taska - method - POST
+```
+127.0.0.1:8080/task/add
+```
+```json
+{
+    "idUser": 20,
+    "titleTask": "Zakupy",
+    "descriptionTask": "Mleko, chleb, ciasto",
+    "startTask": "2016-05-09 19:10:25.0",
+    "endTask": "2016-06-22 19:10:25.0",
+    "tags": "szkola, test",
+    "color": "black",
+    "notificationTask": "2016-06-22 19:10:25.0"
+}
+```
+
+### Taski użytkownika - method - GET
+```
+127.0.0.1:8080/task/getTasks/{username}
+127.0.0.1:8080/task/getTasks/newuser
+```
+```json
+[
+    {
+        "idTask": 22,
+        "titleTask": "Zakupy",
+        "descriptionTask": "Mleko, chleb, ciasto",
+        "startTask": "2016-05-09 19:10:25.0",
+        "endTask": "2016-06-22 19:10:25.0",
+        "tags": "szkola, test",
+        "color": "black",
+        "notificationTask": "2016-06-22 19:10:25.0"
+    }
+]
+```
+
+### Dane konkretnego taska - method - GET
+```
+127.0.0.1:8080/task/getTaskById/{idTask}
+127.0.0.1:8080/task/getTaskById/22
+```
+```json
+{
+    "titleTask": "Zakupy",
+    "descriptionTask": "Mleko, chleb, ciasto",
+    "startTask": "2016-05-09 19:10:25.0",
+    "endTask": "2016-06-22 19:10:25.0",
+    "tags": "szkola, test",
+    "color": "black",
+    "notificationTask": "2016-06-22 19:10:25.0"
+}
+```
+
+### Edycja taska - method - PUT
+```
+127.0.0.1:8080/task/editTask/{username}
+127.0.0.1:8080/task/editTask/newuser
+```
+```json
+{
+    "idTask":22,
+    "titleTask": "Nowy tytul taska",
+    "descriptionTask":"test nowe",
+    "startTask": "2021-06-22 19:10:25",
+    "endTask": "2021-06-22 19:10:25",
+    "tags": "tag",
+    "color": "red",
+    "notificationTask": "2021-06-22 19:10:25"
+}
+```
+
+### Usuwanie taska - method - DELETE
+```
+127.0.0.1:8080/task/deleteTask/{idTask}
+127.0.0.1:8080/task/deleteTask/22
+```

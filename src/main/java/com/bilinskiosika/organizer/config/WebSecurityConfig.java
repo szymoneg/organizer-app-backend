@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/edit","/user/login", "/user/register","/user/showUserData/{idUser}","/user/details/{username}","/note/add"
                         ,"/note/getById/{idNote}","/note/getAll/{username}","/note/edit","/note/deleteById/{idNote}"
                         ,"/task/add","/task/getTaskById/{idTask}"
-                        ,"/task/deleteTask/{idTask}","/task/", "/task/getTasks/{username}","/task/editTask/{idUser}").permitAll().anyRequest().authenticated()
+                        ,"/task/deleteTask/{idTask}","/task/", "/task/getTasks/{username}","/task/editTask/{idUser}", "/swagger-ui.html").permitAll().anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
