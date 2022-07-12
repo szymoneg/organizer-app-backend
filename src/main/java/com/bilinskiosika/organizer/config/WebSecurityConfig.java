@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
-                .antMatchers("/server").hasRole("ENABLE")
+                .antMatchers("/server").permitAll()
                 .antMatchers("/user/edit","/user/login", "/user/register","/user/showUserData/{idUser}","/user/details/{username}","/note/add"
                         ,"/note/getById/{idNote}","/note/getAll/{username}","/note/edit","/note/deleteById/{idNote}"
                         ,"/task/add","/task/getTaskById/{idTask}"

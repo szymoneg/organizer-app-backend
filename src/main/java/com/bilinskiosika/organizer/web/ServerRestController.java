@@ -12,6 +12,6 @@ public class ServerRestController {
 
     @GetMapping("/server")
     public ResponseEntity<String> serverTest(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return ResponseEntity.ok("OK");
     }
 }
